@@ -5,13 +5,13 @@ CREATE DATABASE bamazon;
 USE bamazon;
 
 CREATE TABLE products(
-    item_id INT NOT NULL AUTO_INCREMENT=10110,
+    item_id INT NOT NULL AUTO_INCREMENT,
     product_name VARCHAR(100) NOT NULL,
     department_name VARCHAR(100) NOT NULL,
     price DECIMAL(5, 2) NOT NULL,
     stock_quantity INT NOT NULL,
     PRIMARY KEY (item_id)
-);
+) AUTO_INCREMENT=10120;
 
 /* Insert mock data  */
 INSERT INTO products (product_name, department_name, price, stock_quantity)
