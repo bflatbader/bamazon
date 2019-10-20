@@ -70,28 +70,3 @@ connection.connect(function(err) {
     // Close connection
     connection.end();
 });
-  
-
-// CODE
-// inquirer
-//   .prompt([
-//       {
-//         type: "input",
-//             message: "Would you like to POST an item or BID on an item?",
-//             name: "action"
-//       }
-//   ])
-//   .then(answers => {
-//     action = answers.action.toLowerCase();
-    
-//     switch (action) {
-
-//         case "post" :
-//             postItem();
-//             break;
-
-//         case "bid" :
-//             bidOnItem();
-//             break;
-//     }
-// });
