@@ -24,6 +24,9 @@ function displayItemsForSale () {
         for (i in res) {
             item = new Item(res[i].item_id, res[i].product_name, res[i].department_name, res[i].price);
             items.push(item);
+            
+            // Add item ID to array of known SKUs for validation
+            allSKUs.push(res[i].item_id.toString());
         }
 
         // Output data in a table format
@@ -35,12 +38,21 @@ function displayItemsForSale () {
 }
 
 function purchase () {
+    // Ask the user which item they'd like to purchase and the amount    
     inquirer
     .prompt([
         {
             type: "input",
             message: "Enter the SKU of the item you would like to purchase:",
-            name: "sku"
+            name: "sku",
+            // Ensure that the SKU exists in the database
+            validate: function validateSKU(sku) {
+                if (allSKUs.indexOf(sku) === -1) {
+                    return chalk.red("Please enter a valid SKU");
+                } else {
+                    return true;
+                }
+            }
         },
         {
             type: "input",
@@ -51,13 +63,14 @@ function purchase () {
 }
 
 // VARIABLES
+var allSKUs = [];
 
 // Create connection to SQL table
 var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
     user: "root",
-    password: "password",
+    password: "derD0m1922!",
     database: "bamazon"
 });
 
