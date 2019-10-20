@@ -18,7 +18,7 @@ INSERT INTO products (product_name, department_name, price, stock_quantity)
 VALUES ("Switch Joycon", "Electronics", "66.99", 23);
 
 INSERT INTO products (product_name, department_name, price, stock_quantity)
-VALUES ("Raspberry Pi 3+", "Electronics", "48.50", 31);
+VALUES ("Raspberry Pi 3+", "Electronics", "47.99", 31);
 
 INSERT INTO products (product_name, department_name, price, stock_quantity)
 VALUES ("Weighted Blanket", "Home", "71.99", 5);
