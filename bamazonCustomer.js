@@ -59,7 +59,52 @@ function purchase () {
             message: "Enter the number of units to purchase:",
             name: "units"
         }
-    ])
+    ]) .then(answers => {
+            // Query database for item matching that SKU
+            connection.query(
+                "SELECT * FROM products WHERE ?", 
+                [
+                    {
+                        item_id: answers.sku
+                    }
+                ],  
+                function(err, stockResponse) { 
+                    // Display errors if there were any
+                    if (err) throw err;
+                    
+                    // Check if there is sufficient stock to make a purchase
+                    if (stockResponse[0].stock_quantity >= answers.units) {                      
+                        // Determine how much stock will be left after purchase
+                        stockRemaining = stockResponse[0].stock_quantity - answers.units;
+                        
+                        // Determine cost of purchase
+                        totalCost = stockResponse[0].price * answers.units;
+
+                        // Update database to make purchase
+                        connection.query(
+                            "UPDATE products SET ? WHERE ?", 
+                            [
+                                {
+                                    stock_quantity: stockRemaining
+                                },
+                                {
+                                    item_id: answers.sku
+                                }
+                            ],  
+                            function(err, res2) { 
+                                // Display errors if there were any
+                                if (err) throw err;
+
+                                console.log("\nTOTAL: $" + totalCost.toFixed(2));
+                                console.log(chalk.green("Purchase successfully completed. Thank you!"));
+                                connection.end();
+                            }); 
+                    } else {
+                        console.log(chalk.red("Insufficient quantity!"));
+                        connection.end();
+                    }
+            });        
+    });
 }
 
 // VARIABLES
@@ -70,7 +115,7 @@ var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
     user: "root",
-    password: "derD0m1922!",
+    password: "password",
     database: "bamazon"
 });
 
@@ -81,5 +126,5 @@ connection.connect(function(err) {
     displayItemsForSale();
 
     // Close connection
-    connection.end();
+    // connection.end();
 });
