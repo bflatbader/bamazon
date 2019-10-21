@@ -95,11 +95,13 @@ function purchase () {
                                 // Display errors if there were any
                                 if (err) throw err;
 
+                                // Notify customer that purchase was successful and close connecition
                                 console.log("\nTOTAL: $" + totalCost.toFixed(2));
                                 console.log(chalk.green("Purchase successfully completed. Thank you!"));
                                 connection.end();
                             }); 
                     } else {
+                        // Not enough stock, close database connection
                         console.log(chalk.red("Insufficient quantity!"));
                         connection.end();
                     }
@@ -125,6 +127,4 @@ connection.connect(function(err) {
 
     displayItemsForSale();
 
-    // Close connection
-    // connection.end();
 });
