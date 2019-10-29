@@ -1,19 +1,21 @@
-/* Create database and table */
-DROP DATABASE IF EXISTS bamazon;
-CREATE DATABASE bamazon;
+INSERT INTO departments (department_name, over_head_costs)
+VALUES ("Electronics", 10000);
 
-USE bamazon;
+INSERT INTO departments (department_name, over_head_costs)
+VALUES ("Clothing", 60000);
 
-CREATE TABLE products(
-    item_id INT NOT NULL AUTO_INCREMENT,
-    product_name VARCHAR(100) NOT NULL,
-    department_name VARCHAR(100) NOT NULL,
-    price DECIMAL(5, 2) NOT NULL,
-    stock_quantity INT NOT NULL,
-    PRIMARY KEY (item_id)
-) AUTO_INCREMENT=10120;
+INSERT INTO departments (department_name, over_head_costs)
+VALUES ("Home", 30000);
 
-/* Insert mock data  */
+INSERT INTO departments (department_name, over_head_costs)
+VALUES ("Movies & TV", 5000);
+
+INSERT INTO departments (department_name, over_head_costs)
+VALUES ("Shoes", 8000);
+
+INSERT INTO departments (department_name, over_head_costs)
+VALUES ("Books", 20000);
+
 INSERT INTO products (product_name, department_name, price, stock_quantity)
 VALUES ("Switch Joycon", "Electronics", "66.99", 23);
 
@@ -43,6 +45,3 @@ VALUES ("Cuffed Beanie", "Clothing", "12.99", 10);
 
 INSERT INTO products (product_name, department_name, price, stock_quantity)
 VALUES ("The Phantom Prince", "Books", "21.25", 8);
-
-/* Display data */
-SELECT * FROM products;

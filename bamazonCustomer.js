@@ -8,7 +8,7 @@ function Item(item_id, product_name, department_name, price) {
     this.SKU = item_id;
     this.Product = product_name;
     this.Department = department_name;
-    this.Price = price
+    this.Price = price;
 }
 
 // FUNCTIONS

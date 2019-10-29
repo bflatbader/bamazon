@@ -8,7 +8,7 @@ function Item(item_id, product_name, department_name, price, stock_quantity) {
     this.SKU = item_id;
     this.Product = product_name;
     this.Department = department_name;
-    this.Price = price
+    this.Price = price;
     this.Quantity = stock_quantity;
 }
 
@@ -38,6 +38,10 @@ function displayMenu () {
             case "Add to Inventory":
                 addToInventory();
                 break;
+
+            case "Add New Product":
+                    addNewProduct();
+                    break;
 
             case "Exit":
                 connection.end();
@@ -125,7 +129,7 @@ function addToInventory () {
             "SELECT * FROM products WHERE ?", 
             [
                 {
-                    item_id: answers.sku
+                    item_id: parseFloat(answers.sku)
                 }
             ],  
             function(err, stockResponse) { 
@@ -155,6 +159,63 @@ function addToInventory () {
     }); 
 }
 
+// Add new product
+function addNewProduct () {
+
+    // Get available departments
+    connection.query("SELECT department_name FROM departments", function(err, res) {
+        if (err) throw err;
+
+        var departments = [];
+        for(i in res) {
+            departments.push(res[i].department_name);
+        }
+
+        inquirer
+        .prompt([
+            {
+                type: "input",
+                message: "Enter the name of the item:",
+                name: "name",
+            },
+            {
+                type: "list",
+                message: "Select the department:",
+                choices: departments,
+                name: "department"
+            },
+            {
+                type: "input",
+                message: "Enter the price of the item:",
+                name: "price",
+                validate: function validatePrice(price) {
+                    reg = /^\d+(?:\.\d{0,2})$/;
+                    return reg.test(price) || chalk.red("Please enter a valid price!");
+                }
+            },
+            {
+                type: "input",
+                message: "Enter the available quantity:",
+                name: "quantity",
+                validate: function validatePrice(quantity) {
+                    reg = /^\d+$/;
+                    return reg.test(quantity) || chalk.red("Please enter a valid quantity!");
+                }
+            },
+        ]).then(answers => {
+            insert = `INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES ("${answers.name}", "${answers.department}", ${answers.price}, ${answers.quantity})`
+            connection.query(insert, function(err, res2) { 
+                    // Display errors if there were any
+                    if (err) throw err;
+
+                    console.log(chalk.green("\n Item successfully added. Thank you!\n"));
+
+                    displayMenu();
+                }); 
+        });
+    });
+}
+
 // VARIABLES
 var allSKUs = [];
 
@@ -163,7 +224,7 @@ var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
     user: "root",
-    password: "password",
+    password: "derD0m1922!",
     database: "bamazon"
 });
 
