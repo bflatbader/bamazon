@@ -35,6 +35,10 @@ function displayMenu () {
                 displayLowStock();
                 break;
 
+            case "Add to Inventory":
+                addToInventory();
+                break;
+
             case "Exit":
                 connection.end();
                 break;
@@ -93,6 +97,63 @@ function displayLowStock () {
     });
 }
 
+// Add more to inventory
+function addToInventory () {
+    inquirer
+    .prompt([
+        {
+            type: "input",
+            message: "Enter the SKU of the item:",
+            name: "sku",
+            // Ensure that the SKU exists in the database
+            validate: function validateSKU(sku) {
+                if (allSKUs.indexOf(sku) === -1) {
+                    return chalk.red("Please enter a valid SKU");
+                } else {
+                    return true;
+                }
+            }
+        },
+        {
+            type: "input",
+            message: "Enter the number of units to add:",
+            name: "units"
+        }
+    ]).then(answers => {
+        // Get current stock quantity
+        connection.query(
+            "SELECT * FROM products WHERE ?", 
+            [
+                {
+                    item_id: answers.sku
+                }
+            ],  
+            function(err, stockResponse) { 
+                // Determine the new quantity amount
+                newQuantity = stockResponse[0].stock_quantity + parseFloat(answers.units);
+
+                // Update database
+                connection.query(
+                "UPDATE products SET ? WHERE ?", 
+                [
+                    {
+                        stock_quantity: newQuantity
+                    },
+                    {
+                        item_id: answers.sku
+                    }
+                ],  
+                function(err, res2) { 
+                    // Display errors if there were any
+                    if (err) throw err;
+
+                    console.log(chalk.green("\nQuantity successfully updated. Thank you!\n"));
+
+                    displayMenu();
+                }); 
+            });
+    }); 
+}
 
 // VARIABLES
 var allSKUs = [];
