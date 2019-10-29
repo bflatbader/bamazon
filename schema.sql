@@ -10,7 +10,7 @@ CREATE TABLE products(
     department_name VARCHAR(100) NOT NULL,
     price DECIMAL(5, 2) NOT NULL,
     stock_quantity INT NOT NULL,
-    product_sales INT DEFAULT 0,
+    product_sales DECIMAL(5, 2) DEFAULT 0,
     PRIMARY KEY (item_id)
 ) AUTO_INCREMENT=10120;
 

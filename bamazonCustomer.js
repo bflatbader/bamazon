@@ -71,7 +71,7 @@ function purchase () {
                 function(err, stockResponse) { 
                     // Display errors if there were any
                     if (err) throw err;
-                    
+
                     // Check if there is sufficient stock to make a purchase
                     if (stockResponse[0].stock_quantity >= answers.units) {                      
                         // Determine how much stock will be left after purchase
@@ -80,18 +80,16 @@ function purchase () {
                         // Determine cost of purchase
                         totalCost = stockResponse[0].price * answers.units;
 
+                        // Determine product sales
+                        productSales = stockResponse[0].product_sales + totalCost.toFixed(2);
+
+                        // Create update statement
+                        update = `UPDATE products 
+                        SET stock_quantity=${stockRemaining}, product_sales=${productSales} 
+                        WHERE item_id=${answers.sku}`
+
                         // Update database to make purchase
-                        connection.query(
-                            "UPDATE products SET ? WHERE ?", 
-                            [
-                                {
-                                    stock_quantity: stockRemaining
-                                },
-                                {
-                                    item_id: answers.sku
-                                }
-                            ],  
-                            function(err, res2) { 
+                        connection.query(update, function(err, res2) { 
                                 // Display errors if there were any
                                 if (err) throw err;
 
