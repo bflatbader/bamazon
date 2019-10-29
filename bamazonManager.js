@@ -21,7 +21,7 @@ function displayMenu () {
             type: "list",
             message: "What would you like to do?",
             name: "choice",
-            choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product"]
+            choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product", "Exit"]
         }
     ]).then(answers => {
 
@@ -31,6 +31,13 @@ function displayMenu () {
                 displayItemsForSale();
                 break;
 
+            case "View Low Inventory":
+                displayLowStock();
+                break;
+
+            case "Exit":
+                connection.end();
+                break;
         }
     });
 }
@@ -63,7 +70,27 @@ function displayItemsForSale () {
 
 // Display low stock items
 function displayLowStock () {
+    console.log(chalk.hex('#EC4E20')("\n LOW INVENTORY"));
 
+    connection.query("SELECT * FROM products WHERE stock_quantity < 5", function(err, res) {
+        if (err) throw err;
+
+        // Call Item constrcutor and feed response from database into items array for better display
+        var items = [];
+        for (i in res) {
+            item = new Item(res[i].item_id, res[i].product_name, res[i].department_name, res[i].price, res[i].stock_quantity);
+            items.push(item);
+            
+            // Add item ID to array of known SKUs for validation
+            allSKUs.push(res[i].item_id.toString());
+        }
+
+        // Output data in a table format
+        console.table(items);
+        console.log("\n");
+
+        displayMenu();
+    });
 }
 
 
