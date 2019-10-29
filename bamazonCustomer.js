@@ -97,13 +97,43 @@ function purchase () {
 
                                 // Notify customer that purchase was successful and close connecition
                                 console.log("\nTOTAL: $" + totalCost.toFixed(2));
-                                console.log(chalk.green("Purchase successfully completed. Thank you!"));
-                                connection.end();
+                                console.log(chalk.green("Purchase successfully completed. Thank you!\n"));
+                                
+                                // Check if user would like to make another purchase
+                                inquirer
+                                .prompt([
+                                    {
+                                        type: "confirm",
+                                        message: "Would you like to make another purchase?",
+                                        name: "confirm",
+                                    }
+                                ]) .then(answers => {
+                                    if (answers.confirm) {
+                                        purchase();
+                                    } else {
+                                        connection.end();
+                                    }
+                                });
                             }); 
                     } else {
                         // Not enough stock, close database connection
-                        console.log(chalk.red("Insufficient quantity!"));
-                        connection.end();
+                        console.log(chalk.red("Insufficient quantity!\n"));
+
+                        // Check if user would like to make another purchase
+                        inquirer
+                        .prompt([
+                            {
+                                type: "confirm",
+                                message: "Would you like to attempt another purchase?",
+                                name: "confirm",
+                            }
+                        ]) .then(answers => {
+                            if (answers.confirm) {
+                                purchase();
+                            } else {
+                                connection.end();
+                            }
+                        });
                     }
             });        
     });
