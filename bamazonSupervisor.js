@@ -3,6 +3,14 @@ var mysql = require("mysql");
 var inquirer = require("inquirer");
 var chalk = require("chalk");
 
+// CONSTRUCTOR
+function DepartmentSales(department_name, over_head_costs, product_sales, total_profit) {
+    this.Department = department_name;
+    this.Over_Head_Costs = over_head_costs;
+    this.Product_Sales = product_sales;
+    this.Total_Profit = total_profit;
+}
+
 // FUNCTIONS
 // Menu for supervisor to select from
 function displayMenu () {
@@ -19,7 +27,7 @@ function displayMenu () {
         switch (answers.choice) {
 
             case "View Product Sales by Department":
-                // function
+                viewSalesbyDept();
                 break;
 
             case "Create New Department":
@@ -60,6 +68,28 @@ function createNewDepartment () {
 
                 displayMenu();
             }); 
+    });
+}
+
+// View Product Sales by Department
+function viewSalesbyDept () {
+    connection.query("SELECT department_name FROM departments", function(err, res) {
+        if (err) throw err;
+
+        var departments = [];
+        for(i in res) {
+            join = `SELECT departments.department_name, departments.over_head_costs, SUM(product_sales) as 'total_sales'
+            FROM departments INNER JOIN products 
+            ON departments.department_name = products.department_name
+            WHERE departments.department_name = '${res[i].department_name}';         
+            `
+
+            connection.query(join, function(err, res2) {
+                total_profit = res2.over_head_costs - res2.total_sales;
+                salesInfo = new DepartmentSales(res2[0].department_name, res2[0].over_head_costs, res2[0].total_sales, total_profit);
+                departments.push(salesInfo);
+            });
+        }
     });
 }
 
