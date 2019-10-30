@@ -85,9 +85,10 @@ function viewSalesbyDept () {
             `
 
             connection.query(join, function(err, res2) {
-                total_profit = res2.over_head_costs - res2.total_sales;
+                total_profit = res2[0].total_sales - res2[0].over_head_costs;
                 salesInfo = new DepartmentSales(res2[0].department_name, res2[0].over_head_costs, res2[0].total_sales, total_profit);
                 departments.push(salesInfo);
+                console.table(salesInfo);
             });
         }
     });
